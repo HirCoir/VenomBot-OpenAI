@@ -1,5 +1,5 @@
 # Use the official Node.js 20 slim image as base
-FROM node:20-slim
+FROM node:20
 # Definir las variables de entorno
 ARG TOKEN=""
 ARG OPENAI_SERVER=""
