@@ -9,7 +9,7 @@ RUN apt update
 RUN apt install -y chromium
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /home/app
-
+RUN mkdir chats
 # Copia el archivo package.json y package-lock.json (si existe)
 COPY package*.json ./
 
