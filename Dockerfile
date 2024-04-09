@@ -5,6 +5,7 @@ ARG TOKEN=""
 ARG OPENAI_SERVER=""
 ARG MODEL=""
 ARG PIPER_API_URL=""
+ARG PIPER_MODEL=""
 RUN apt update
 RUN apt install -y chromium
 WORKDIR /home/app
@@ -15,5 +16,6 @@ COPY . .
 RUN echo "TOKEN=$TOKEN" > .env && \
     echo "OPENAI_SERVER=$OPENAI_SERVER" >> .env && \
     echo "MODEL=$MODEL" >> .env && \
-    echo "PIPER_API_URL=$PIPER_API_URL" >> .env
+    echo "PIPER_API_URL=$PIPER_API_URL" >> .env && \
+    echo "PIPER_MODEL=$PIPER_MODEL" >> .env
 CMD ["node", "app.js"]
