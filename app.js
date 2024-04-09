@@ -82,7 +82,7 @@ async function start(client) {
         await client.sendText(message.from, assistantResponse);
 
         // Convertimos el texto a voz y lo enviamos como archivo de audio
-        const audioResponse = await axios.post('http://piper-low.studio.hircoir.eu.org/convert', {
+        const audioResponse = await axios.post(process.env.PIPER_API_URL, {
           text: assistantResponse,
           model: 'kamora'
         }, {
