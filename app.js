@@ -84,7 +84,7 @@ async function start(client) {
         // Convertimos el texto a voz y lo enviamos como archivo de audio
         const audioResponse = await axios.post(process.env.PIPER_API_URL, {
           text: assistantResponse,
-          model: 'kamora'
+          model: process.env.PIPER_MODEL
         }, {
           headers: {
             'Content-Type': 'application/json'
