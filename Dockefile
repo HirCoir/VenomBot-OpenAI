@@ -1,6 +1,7 @@
 # Use the official Node.js 20 slim image as base
 FROM node:20-slim
-
+RUN apt update
+RUN apt install -y chromium
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /home/app
 
@@ -12,6 +13,9 @@ RUN npm install
 
 # Copia el resto de los archivos de la aplicación
 COPY . .
+# Exporta las variables de entorno al archivo .env
+RUN echo "CAPROVER_API_KEY=$CAPROVER_API_KEY" > .env && \
+    echo "CAPROVER_API_URL=$CAPROVER_API_URL" >> .env
 
 # Comando para ejecutar la aplicación
 CMD ["node", "app.js"]
