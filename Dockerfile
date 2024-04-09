@@ -1,0 +1,28 @@
+# Use the official Node.js 20 slim image as base
+FROM node:20-slim
+# Definir las variables de entorno
+ENV TOKEN=""
+ENV OPENAI_SERVER=""
+ENV MODEL=""
+
+RUN apt update
+RUN apt install -y chromium
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /home/app
+RUN mkdir chats
+# Copia el archivo package.json y package-lock.json (si existe)
+COPY package*.json ./
+
+# Instala las dependencias del proyecto
+RUN npm install
+
+# Copia el resto de los archivos de la aplicación
+COPY . .
+
+# Crear el archivo .env durante la construcción
+RUN echo "TOKEN=$TOKEN" > .env && \
+    echo "OPENAI_SERVER=$OPENAI_SERVER" >> .env && \
+    echo "MODEL=$MODEL" >> .env
+
+# Comando para ejecutar la aplicación
+CMD ["node", "app.js"]
