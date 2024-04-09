@@ -1,9 +1,9 @@
 # Use the official Node.js 20 slim image as base
 FROM node:20-slim
 # Definir las variables de entorno
-ENV TOKEN=""
-ENV OPENAI_SERVER=""
-ENV MODEL=""
+ARG TOKEN=""
+ARG OPENAI_SERVER=""
+ARG MODEL=""
 
 RUN apt update
 RUN apt install -y chromium
