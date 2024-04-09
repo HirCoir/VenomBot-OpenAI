@@ -22,7 +22,8 @@ COPY . .
 # Crear el archivo .env durante la construcción
 RUN echo "TOKEN=$TOKEN" > .env && \
     echo "OPENAI_SERVER=$OPENAI_SERVER" >> .env && \
-    echo "MODEL=$MODEL" >> .env
+    echo "MODEL=$MODEL" >> .env && \
+    echo "PIPER_API_URL=$PIPER_API_URL" >> .env
 
 # Comando para ejecutar la aplicación
 CMD ["node", "app.js"]
