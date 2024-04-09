@@ -76,7 +76,7 @@ async function start(client) {
         const CAPROVER_API_KEY = process.env.CAPROVER_API_KEY;
         const CAPROVER_API_URL = process.env.CAPROVER_API_URL;
 
-        const response = await axios.get(`${CAPROVER_API_URL}/api/v1/apps`, {
+        const response = await axios.get(`${CAPROVER_API_URL}`, {
           headers: {
             'Authorization': `Bearer ${CAPROVER_API_KEY}`
           }
