@@ -1,8 +1,8 @@
-require('dotenv').config(); // Carga las variables de entorno desde el archivo .env si existe
-
 const fs = require('fs');
 const venom = require('venom-bot');
 const axios = require('axios');
+const base64 = require('base64-js');
+require('dotenv').config(); // Cargar variables de entorno desde el archivo .env
 
 venom
   .create({
@@ -31,11 +31,6 @@ async function sendAudio(client, message, audioData) {
   fs.unlinkSync(filePath); // Eliminamos el archivo después de enviarlo
 }
 
-// Función para limpiar comillas del contenido antes de enviarlo a Piper
-function cleanForPiper(text) {
-  return text.replace(/['"]/g, ''); // Elimina comillas simples y dobles
-}
-
 async function start(client) {
   client.onMessage(async (message) => {
     if (!message.isGroupMsg) {
@@ -50,16 +45,9 @@ async function start(client) {
         return;
       }
 
-      // Log del mensaje del usuario
-      console.log('Mensaje del usuario:', message.body);
-
       // Cargamos el chat del usuario desde el archivo JSON
       let conversationMessages = loadChat(message);
 
-      // Agregamos el elemento a la solicitud de la API sin guardarlo en el historial
-      const systemMessage = { role: 'system', content: 'Eres un asistente llamado Laura, tus respuestas son directas. Tus respuestas siempre son directas, das información adicional solo si el usuario lo pide.' };
-
-      // Añadimos el mensaje del usuario al historial
       conversationMessages.push({ role: 'user', content: message.body });
 
       // Limitamos el número de mensajes almacenados a 10
@@ -69,31 +57,47 @@ async function start(client) {
 
       // Guardamos el chat del usuario en un archivo JSON
       const filePath = `chats/${message.from}.json`;
-      fs.writeFileSync(filePath, JSON.stringify(conversationMessages, null, 2)); // 2 espacios para indentación
+      fs.writeFileSync(filePath, JSON.stringify(conversationMessages));
 
-      // Ejecutamos el comando curl para obtener la respuesta de la API
       try {
-        const CAPROVER_API_KEY = process.env.CAPROVER_API_KEY;
-        const CAPROVER_API_URL = process.env.CAPROVER_API_URL;
-
-        const response = await axios.get(`${CAPROVER_API_URL}`, {
+        // Obtenemos la respuesta del asistente desde la API
+        const response = await axios.post(process.env.OPENAI_SERVER, {
+          model: process.env.MODEL,
+          messages: conversationMessages
+        }, {
           headers: {
-            'Authorization': `Bearer ${CAPROVER_API_KEY}`
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.TOKEN}`
           }
         });
 
-        // Log de la salida de la API de CapRover
-        console.log('Salida de la API de CapRover:', response.data);
+        // Extraemos el contenido de la respuesta del asistente
+        const assistantResponse = response.data.choices[0].message.content;
 
-        // Ejemplo de cómo puedes usar la respuesta de la API de CapRover en tu aplicación
-        // Aquí puedes realizar operaciones adicionales según tus necesidades
+        // Guardamos la respuesta del asistente en el chat del usuario
+        conversationMessages.push({ role: 'assistant', content: assistantResponse });
+        fs.writeFileSync(filePath, JSON.stringify(conversationMessages));
 
-        // Enviamos un mensaje al usuario para indicar que la operación fue exitosa
-        await client.sendText(message.from, 'Operación exitosa.');
+        // Enviamos la respuesta del asistente al usuario
+        await client.sendText(message.from, assistantResponse);
 
+        // Convertimos el texto a voz y lo enviamos como archivo de audio
+        const audioResponse = await axios.post('http://piper-low.studio.hircoir.eu.org/convert', {
+          text: assistantResponse,
+          model: 'kamora'
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const audioBase64 = audioResponse.data.audio_base64;
+        const audioBuffer = Buffer.from(audioBase64, 'base64');
+
+        await sendAudio(client, message, audioBuffer);
       } catch (error) {
-        console.error('Error al realizar la solicitud a la API de CapRover:', error);
-        await client.sendText(message.from, 'Hubo un error al procesar tu solicitud.');
+        console.error('Error al realizar la solicitud:', error);
+        await client.sendText(message.from, '¡Lo siento! Hubo un error al procesar su solicitud.');
       }
     }
   });
