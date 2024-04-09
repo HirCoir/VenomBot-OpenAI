@@ -4,6 +4,7 @@ FROM node:20
 ARG TOKEN=""
 ARG OPENAI_SERVER=""
 ARG MODEL=""
+ARG PIPER_API_URL=""
 RUN apt update
 RUN apt install -y chromium
 WORKDIR /home/app
