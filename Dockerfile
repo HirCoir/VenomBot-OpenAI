@@ -6,16 +6,20 @@ ARG OPENAI_SERVER=""
 ARG MODEL=""
 ARG PIPER_API_URL=""
 ARG PIPER_MODEL=""
-RUN apt update
-RUN apt install -y chromium
+
 WORKDIR /home/app
+RUN apt update && apt install -y chromium
 RUN mkdir chats; mkdir temp
+
 COPY package*.json ./
 RUN npm install
+
 COPY . .
-RUN echo "TOKEN=$TOKEN" > .env && \
-    echo "OPENAI_SERVER=$OPENAI_SERVER" >> .env && \
-    echo "MODEL=$MODEL" >> .env && \
-    echo "PIPER_API_URL=$PIPER_API_URL" >> .env && \
-    echo "PIPER_MODEL=$PIPER_MODEL" >> .env
+
+RUN if [ -n "$TOKEN" ]; then echo "TOKEN=$TOKEN" >> .env; fi && \
+    if [ -n "$OPENAI_SERVER" ]; then echo "OPENAI_SERVER=$OPENAI_SERVER" >> .env; fi && \
+    if [ -n "$MODEL" ]; then echo "MODEL=$MODEL" >> .env; fi && \
+    if [ -n "$PIPER_API_URL" ]; then echo "PIPER_API_URL=$PIPER_API_URL" >> .env; fi && \
+    if [ -n "$PIPER_MODEL" ]; then echo "PIPER_MODEL=$PIPER_MODEL" >> .env; fi
+
 CMD ["node", "app.js"]
