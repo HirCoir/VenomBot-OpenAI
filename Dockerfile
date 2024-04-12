@@ -22,4 +22,4 @@ RUN if [ -n "$TOKEN" ]; then echo "TOKEN=$TOKEN" >> .env; fi && \
     if [ -n "$PIPER_API_URL" ]; then echo "PIPER_API_URL=$PIPER_API_URL" >> .env; fi && \
     if [ -n "$PIPER_MODEL" ]; then echo "PIPER_MODEL=$PIPER_MODEL" >> .env; fi
 
-CMD ["node", "app.js"]
+CMD ["node", "app-without-tts.js"]
