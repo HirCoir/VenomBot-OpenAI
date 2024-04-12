@@ -15,7 +15,7 @@ venom
 // Función para guardar el chat del usuario en un archivo JSON
 function saveChat(message, conversationMessages) {
   const filePath = `chats/${message.from}.json`;
-  fs.writeFileSync(filePath, JSON.stringify(conversationMessages, null, 2));
+  fs.writeFileSync(filePath, JSON.stringify(conversationMessages, null, 2)); // Pretty print
 }
 
 // Función para cargar el chat del usuario desde un archivo JSON
