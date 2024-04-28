@@ -87,7 +87,8 @@ async function start(client) {
           model: process.env.PIPER_MODEL
         }, {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.PIPER_API_TOKEN}` // Aquí se agrega el token desde el archivo .env
           }
         });
 
