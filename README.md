@@ -5,6 +5,9 @@ VenomBot-OpenAI es un bot de WhatsApp utilizando Venom-Bot y la API de OpenAI pa
 ## Información básica:
 app-without-tts.js: Un bot simple que solo requiere la url /v1/chat/completions para funcionar.
 
+app-without-json-chat.js: Un bot simple que usa la api de Piper para convertir el texto a voz pero este almacena los mensajes en una variable.
+
+app.js: Un bot que usa la api de Piper para la conversión de voz y almacena los mensajes en la carpeta chats.
 ## Requisitos
 
 - Node.js
@@ -74,7 +77,6 @@ node index.js
 ## Contribuciones
 
 Las contribuciones son bienvenidas. Por favor, abre un issue o un pull request para cualquier mejora o problema que encuentres.
-
 ## Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
